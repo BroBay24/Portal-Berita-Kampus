@@ -47,13 +47,21 @@ class NewsResource extends Resource
                 TextInput::make('slug')
                     ->readOnly(),
                 FileUpload::make('thumbnail')
+                    ->label('Thumbnail Berita')
                     ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:9',
+                        '4:3',
+                        null,
+                    ])
+                    ->imageResizeMode('contain')
+                    ->imageCropAspectRatio('16:9')
+                    ->imageResizeTargetWidth('1920')
+                    ->imageResizeTargetHeight('1080')
+                    ->directory('news-thumbnails')
                     ->required()
-                    ->columnSpanfull()
-                        ->image()
-                        ->directory('news-thumbnails') // ini WAJIB agar konsisten
-                        ->required()
-                        ->columnSpanFull(),
+                    ->columnSpanFull(),
                 RichEditor::make('content')
                     ->required()
                     ->columnSpanFull(),

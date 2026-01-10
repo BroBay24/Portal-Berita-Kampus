@@ -23,7 +23,7 @@ class StatsDashboard extends BaseWidget
         $yesterdayNewsCount = News::whereDate('created_at', $yesterday)->count();
 
         // Persentase kenaikan berita harian
-        if ($yesterdayNewsCount > 0) {
+        if ($yesterdayNewsCount > 0) {  
             $persentaseKenaikan = round((($todayNewsCount - $yesterdayNewsCount) / $yesterdayNewsCount) * 100, 2);
         } else {    
             $persentaseKenaikan = $todayNewsCount > 0 ? 100 : 0;

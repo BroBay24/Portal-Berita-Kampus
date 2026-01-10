@@ -3,173 +3,232 @@
 @section('title', 'Kabar Kampus | Portal Berita Ukdc')
 
 @section('content')
-    <!-- swiper -->
-    <div class="swiper mySwiper mt-9">
+    <!-- Swiper Banner -->
+    <div class="swiper mySwiper mt-6 mb-10 px-4 lg:px-14">
         <div class="swiper-wrapper">
-            <!-- swiper -->
-<div class="swiper mySwiper mt-9">
-    <div class="swiper-wrapper">
-        @foreach ($banners as $banner)
-            @if ($banner->news)
-                <div class="swiper-slide">
-                    <a href="{{ route('news.show', $banner->news->slug) }}" class="block">
-                        <div class="relative flex flex-col gap-1 justify-end p-3 h-72 rounded-xl bg-cover bg-center overflow-hidden"
-                            style="background-image: url('{{ asset('storage/' . $banner->news->thumbnail) }}')">
-                            
-                            <!-- Gradient Overlay -->
-                            <div class="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[rgba(0,0,0,0.4)] to-[rgba(0,0,0,0)] rounded-b-xl"></div>
-                            
-                            <!-- Content -->
-                            <div class="relative z-10 mb-3" style="padding-left: 10px;">
-                                <!-- Category -->
-                                @if ($banner->news->newsCategory)
-                                    <div class="bg-primary text-white text-xs rounded-lg w-fit px-3 py-1 font-normal mt-3">
-                                        {{ $banner->news->newsCategory->title }}
-                                    </div>
-                                @endif
+            @foreach ($banners as $banner)
+                @if ($banner->news)
+                    <div class="swiper-slide">
+                        <a href="{{ route('news.show', $banner->news->slug) }}" class="block">
+                            <div class="relative h-72 lg:h-96 rounded-2xl overflow-hidden bg-gray-900">
+                                <img src="{{ asset('storage/' . $banner->news->thumbnail) }}" alt="{{ $banner->news->title }}" class="absolute inset-0 w-full h-full object-contain">
+                                <!-- Gradient Overlay -->
+                                <div class="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[rgba(0,0,0,0.6)] to-[rgba(0,0,0,0)] pointer-events-none"></div>
+                                <div class="relative flex flex-col gap-1 justify-end p-3 h-full">
+                                
+                                <!-- Content -->
+                                <div class="relative z-10 mb-3 px-4">
+                                    <!-- Category -->
+                                    @if ($banner->news->newsCategory)
+                                        <div class="bg-primary text-white text-xs rounded-2xl w-fit px-3 py-1 font-normal">
+                                            {{ $banner->news->newsCategory->title }}
+                                        </div>
+                                    @endif
 
-                                <!-- Title -->
-                                <p class="text-3xl font-semibold text-white mt-1">
-                                    {{ $banner->news->title }}
+                                    <!-- Title -->
+                                    <p class="text-2xl lg:text-4xl font-bold text-white mt-2 line-clamp-2">
+                                        {{ $banner->news->title }}
+                                    </p>
+
+                                    <!-- Author -->
+                                    @if ($banner->news->author && $banner->news->author->avatar)
+                                        <div class="flex items-center gap-2 mt-3">
+                                            <img src="{{ asset('storage/' . $banner->news->author->avatar) }}" alt="Author Avatar"
+                                                class="w-6 h-6 rounded-full border border-white">
+                                            <p class="text-white text-sm font-medium">{{ $banner->news->author->name }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Berita Unggulan Section -->
+    <section class="px-4 md:px-10 lg:px-14 py-12 bg-gray-50">
+        <div class="mb-8">
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 text-center lg:text-left">
+                Berita Unggulan Universitas
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach ($featured as $featured)
+                <a href="{{ route('news.show', $featured->slug) }}" class="group">
+                    <div class="h-full border border-gray-200 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg transition duration-300">
+                        <!-- Image Container -->
+                        <div class="relative h-40 overflow-hidden bg-gray-200">
+                            <img src="{{ asset('storage/' . $featured->thumbnail) }}" alt="{{ $featured->title }}"
+                                class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
+                            <div class="absolute top-3 left-3 bg-primary text-white text-xs px-3 py-1 rounded-2xl">
+                                {{ $featured->newsCategory->title }}
+                            </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-4">
+                            <p class="font-bold text-base text-gray-900 line-clamp-2 group-hover:text-primary transition">
+                                {{ $featured->title }}
+                            </p>
+                            <p class="text-slate-500 text-sm mt-2">
+                                {{ \Carbon\Carbon::parse($featured->created_at)->format('d F Y') }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Berita Terbaru Section -->
+    <section class="px-4 md:px-10 lg:px-14 py-12">
+        <div class="mb-8">
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 text-center lg:text-left">
+                Berita Terbaru
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Berita Utama -->
+            @if (isset($news[0]))
+            <div class="lg:col-span-7 lg:row-span-3">
+                <a href="{{ route('news.show', $news[0]->slug) }}" class="group block h-full">
+                    <div class="h-full border border-gray-200 rounded-2xl overflow-hidden hover:border-primary hover:shadow-lg transition duration-300">
+                        <div class="relative h-96 overflow-hidden bg-gray-200">
+                            <img src="{{ asset('storage/' . $news[0]->thumbnail) }}" alt="{{ $news[0]->title }}"
+                                class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
+                            <div class="absolute top-4 left-4 bg-primary text-white text-sm px-4 py-2 rounded-lg">
+                                {{ $news[0]->newsCategory->title }}
+                            </div>
+                        </div>
+                        
+                        <div class="p-5">
+                            <p class="font-bold text-xl text-gray-900 line-clamp-2 group-hover:text-primary transition">
+                                {{ $news[0]->title }}
+                            </p>
+                            <p class="text-gray-600 text-sm mt-3 line-clamp-3">
+                                {!! \Str::limit($news[0]->content, 100) !!}
+                            </p>
+                            <p class="text-slate-500 text-sm mt-4">
+                                {{ \Carbon\Carbon::parse($news[0]->created_at)->format('d F Y') }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            @endif
+
+            <!-- Berita Kecil -->
+            <div class="lg:col-span-5 flex flex-col gap-5">
+                @foreach ($news->skip(1)->take(3) as $new)
+                    <a href="{{ route('news.show', $new->slug) }}" class="group">
+                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:border-primary hover:shadow-md transition duration-300 p-4 flex gap-4">
+                            <div class="relative w-32 h-24 flex-shrink-0 bg-gray-200 rounded overflow-hidden">
+                                <img src="{{ asset('storage/' . $new->thumbnail) }}" alt="{{ $new->title }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <div class="absolute top-2 left-2 bg-primary text-white text-xs px-2 py-1 rounded">
+                                    {{ $new->newsCategory->title }}
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-semibold text-sm text-gray-900 line-clamp-2 group-hover:text-primary transition">
+                                    {{ $new->title }}
                                 </p>
-
-                                <!-- Author -->
-                                @if ($banner->news->author)
-                                    <div class="flex items-center gap-1 mt-1">
-                                        <img src="{{ asset('storage/' . $banner->news->author->avatar) }}" alt="Author Avatar"
-                                            class="w-5 h-5 rounded-full">
-                                        <p class="text-white text-xs">{{ $banner->news->author->name }}</p>
-                                    </div>
-                                @endif
+                                <p class="text-slate-500 text-xs mt-2">
+                                    {{ \Carbon\Carbon::parse($new->created_at)->format('d F Y') }}
+                                </p>
                             </div>
                         </div>
                     </a>
-                </div>
-            @endif
-        @endforeach
-    </div>
-</div>
-
-        </div>
-    </div>
-
-    <!-- Berita Unggulan -->
-    <div class="flex flex-col px-14 mt-10 ">
-        <div class="flex flex-col md:flex-row justify-between items-center w-full mb-6">
-            <div class="font-bold text-2xl text-center md:text-left">
-                <p>Berita Unggulan Universitas</p>
-            </div>
-        <div class="grid sm:grid-cols-1 gap-5 lg:grid-cols-4">
-            @foreach ($featured as $featured)
-                <a href="{{ route('news.show', $featured->slug) }}">
-                    <div class="border border-slate-200 p-3 rounded-xl hover:border-primary hover:cursor-pointer transition duration-300 ease-in-out"
-                        style="height: 100%">
-                        <div
-                            class="bg-primary text-white rounded-full w-fit px-5 py-1 font-normal ml-2 mt-2 text-sm absolute">
-                            {{ $featured->newsCategory->title }}
-                        </div>
-                        <img src="{{ asset('storage/' . $featured->thumbnail) }}" alt=""
-                            class="w-full rounded-xl mb-3" style="height: 150px; object-fit: cover;">
-                        <p class="font-bold text-base mb-1">{{ $featured->title }}</p>
-                        <p class="text-slate-400">{{ \Carbon\Carbon::parse($featured->created_at)->format('d F Y') }}</p>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </div>
-
-    <!-- Berita Terbaru -->
-    <div class="flex flex-col px-4 md:px-10 lg:px-14 mt-10">
-        <div class="flex flex-col md:flex-row w-full mb-6">
-            <div class="font-bold text-2xl text-center md:text-left">
-                <p>Berita Terbaru</p>
+                @endforeach
             </div>
         </div>
+    </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Berita Utama -->
-            <div
-                class="relative col-span-7 lg:row-span-3 border border-slate-200 p-3 rounded-xl hover:border-primary hover:cursor-pointer">
-                <a href="{{ route('news.show', $news[0]->slug) }}">
-                    <div class="bg-primary text-white rounded-full w-fit px-4 py-1 font-normal ml-5 mt-5 absolute">
-                        {{ $news[0]->newsCategory->title }}
-                    </div>
-                    <img src="{{ asset('storage/' . $news[0]->thumbnail) }}" alt="berita1" class="rounded-2xl"
-                        style="height: 400px; width: 100%; object-fit: cover;">
-                    <p class="font-bold text-xl mt-3">
-                        {{ $news[0]->title }}
-                    </p>
-                    <p class="text-slate-400 text-base mt-1">
-                        {!! \Str::limit($news[0]->content, 100) !!}
-                    </p>
-                    <p class="text-slate-400 text-base mt-1">23 Januari 2024</p>
-                </a>
-            </div>
-
-            <!-- Berita 1 -->
-            @foreach ($news->skip(1) as $new)
-                <a href="{{ route('news.show', $new->slug) }}"
-                    class="relative col-span-5 flex flex-col h-fit md:flex-row gap-3 border border-slate-200 p-3 rounded-xl hover:border-primary hover:cursor-pointer">
-                    <div class="bg-primary text-white rounded-full w-fit px-4 py-1 font-normal ml-2 mt-2 absolute text-sm">
-                        {{ $new->newsCategory->title }}
-                    </div>
-                    <img src="{{ asset('storage/' . $new->thumbnail) }}" alt="berita2" class="rounded-xl md:max-h-48"
-                        style="width: 250px; object-fit: cover;">
-                    <div class="mt-2 md:mt-0">
-                        <p class="font-semibold text-lg">{{ $new->title }}</p>
-                        <p class="text-slate-400 mt-3 text-sm font-normal">
-                            {!! \Str::limit($new->content, 40) !!}
-                        </p>
-                    </div>
-                </a>
-            @endforeach
+    <!-- Author Section -->
+    <section class="px-4 md:px-10 lg:px-14 py-12 bg-gray-50">
+        <div class="mb-8">
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 text-center lg:text-left">
+                Penulis Terbaik
+            </h2>
         </div>
-
-    </div>
-
-    <!-- Author -->
-    <div class="flex flex-col px-4 md:px-10 lg:px-14 mt-10">
-        
-        <div class="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            <!-- Author 1 -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             @foreach ($authors as $author)
-                <a href="{{ route('author.show', $author->username) }}">
-                    <div
-                        class="flex flex-col items-center border border-slate-200 px-4 py-8 rounded-2xl hover:border-primary hover:cursor-pointer">
-                        <img src="{{ asset('storage/' . $author->avatar) }}" alt="" class="rounded-full w-24 h-24">
-                        <p class="font-bold text-xl mt-4">{{ $author->name }}</p>
-                        <p class="text-slate-400">{{ $author->news->count() }} Berita</p>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </div>
-
-    <!-- Pilihan Author -->
-    <div class="flex flex-col px-14 mt-10 mb-10">
-        <div class="flex flex-col md:flex-row justify-between items-center w-full mb-6">
-            <div class="font-bold text-2xl text-center md:text-left">
-                <p>Pilihan Author</p>
-            </div>
-        </div>
-        <div class="grid sm:grid-cols-1 gap-5 lg:grid-cols-4">
-            @foreach ($news as $choice)
-                <a href="{{ route('news.show', $choice->slug) }}">
-                    <div class="border border-slate-200 p-3 rounded-xl hover:border-primary hover:cursor-pointer transition duration-300 ease-in-out"
-                        style="height: 100%;">
-                        <div
-                            class="bg-primary text-white rounded-full w-fit px-5 py-1 font-normal ml-2 mt-2 text-sm absolute">
-                            {{ $choice->newsCategory->title }}
+                <a href="{{ route('author.show', $author->username) }}" class="group">
+                    <div class="h-full flex flex-col items-center border border-gray-200 rounded-lg p-6 hover:border-primary hover:shadow-lg transition duration-300 text-center">
+                        <!-- Avatar -->
+                        <div class="mb-4">
+                            @if ($author->avatar)
+                                <img src="{{ asset('storage/' . $author->avatar) }}" alt="{{ $author->name }}" 
+                                    class="w-20 h-20 lg:w-24 lg:h-24 rounded-full object-cover border-2 border-primary group-hover:scale-110 transition duration-300">
+                            @else
+                                <div class="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center text-white text-xl font-bold">
+                                    {{ strtoupper(substr($author->name, 0, 1)) }}
+                                </div>
+                            @endif
                         </div>
-                        <img src="{{ asset('storage/' . $choice->thumbnail) }}" alt=""
-                            class="w-full rounded-xl mb-3" style="height: 200px; object-fit: cover;">
-                        <p class="font-bold text-base mb-1">
-                            {{ $choice->title }}
+
+                        <!-- Info -->
+                        <p class="font-bold text-sm lg:text-base text-gray-900 group-hover:text-primary transition line-clamp-2">
+                            {{ $author->name }}
                         </p>
-                        <p class="text-slate-400">{{ \Carbon\Carbon::parse($choice->created_at)->format('d F Y') }}</p>
+                        <p class="text-slate-500 text-xs mt-1">
+                            {{ $author->News->count() }} {{ $author->News->count() === 1 ? 'Berita' : 'Berita' }}
+                        </p>
                     </div>
                 </a>
             @endforeach
         </div>
-    </div>
+    </section>
+
+    <!-- Pilihan Redaksi Section -->
+    <section class="px-4 md:px-10 lg:px-14 py-12">
+        <div class="mb-8">
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 text-center lg:text-left">
+                Pilihan Redaksi
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach ($news as $choice)
+                <a href="{{ route('news.show', $choice->slug) }}" class="group">
+                    <div class="h-full border border-gray-200 rounded-lg overflow-hidden hover:border-primary hover:shadow-lg transition duration-300">
+                        <!-- Image Container -->
+                        <div class="relative h-48 overflow-hidden bg-gray-200">
+                            <img src="{{ asset('storage/' . $choice->thumbnail) }}" alt="{{ $choice->title }}"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <div class="absolute top-3 left-3 bg-primary text-white text-xs px-3 py-1 rounded-lg">
+                                {{ $choice->newsCategory->title }}
+                            </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-4">
+                            <p class="font-bold text-base text-gray-900 line-clamp-2 group-hover:text-primary transition">
+                                {{ $choice->title }}
+                            </p>
+                            <p class="text-slate-500 text-sm mt-3">
+                                {{ \Carbon\Carbon::parse($choice->created_at)->format('d F Y') }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="px-4 md:px-10 lg:px-14 py-12 bg-gradient-to-r from-white via-blue-50 to-blue-400 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl lg:text-3xl font-bold mb-4 text-gray-900">Jadilah Bagian Dari Komunitas Kabar Kampus</h2>
+            <p class="text-gray-700 mb-6 max-w-2xl mx-auto">
+                Bagikan berita, pengalaman, dan cerita menarikmu di Universitas. Login sebagai penulis sekarang.
+            </p>
+            <a href="{{ route('login') }}" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-blue-700 transition duration-300">
+                Daftar sebagai Penulis
+            </a>
+        </div>
+    </section>
 @endsection

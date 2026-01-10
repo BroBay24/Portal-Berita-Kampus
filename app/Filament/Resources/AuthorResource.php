@@ -33,8 +33,19 @@ class AuthorResource extends Resource
                 TextInput::make('username')
                 -> required(),
                 FileUpload::make('avatar')
-                ->image()
-                ->required(),
+                    ->label('Avatar')
+                    ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '1:1',
+                    ])
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('1:1')
+                    ->imageResizeTargetWidth('400')
+                    ->imageResizeTargetHeight('400')
+                    ->directory('avatars')
+                    ->required()
+                    ->columnSpanFull(),
                 Textarea::make('bio')
                 ->required()
             ]);

@@ -17,15 +17,14 @@ class News extends Model
 
     ];
 
-     
-    public function Author()
+    public function author()
     {
-        return $this->belongsTo(author::class);
+        return $this->belongsTo(Author::class);
     }
  
     public function newsCategory()
     {
-        return $this->belongsTo(newsCategory::class);
+        return $this->belongsTo(NewsCategory::class);
     }
     
     public function Banner()
