@@ -1,4 +1,4 @@
-@extends("Layouts.app")
+@extends('layouts.app')
 
 @section('title', $category?->title ?? 'Kategori')
 
@@ -13,10 +13,8 @@
       <div class="grid sm:grid-cols-1 gap-5 lg:grid-cols-4">
         @foreach ($category->news ?? [] as $news)
 
-        <a href="{{ route('news.show', $news->slug) }}">
-          <div
-          {{ route('news.show', $news->slug) }}
-            class="border border-slate-200 p-3 rounded-2xl hover:border-primary hover:cursor-pointer transition duration-300 ease-in-out">
+        <a href="{{ route('news.show', $news->slug) }}" class="block">
+          <div class="border border-slate-200 p-3 rounded-2xl hover:border-primary hover:cursor-pointer transition duration-300 ease-in-out">
             <div class="bg-primary text-white rounded-full w-fit px-5 py-1 font-normal ml-2 mt-2 text-sm absolute">
               {{ $news->newsCategory->title }} </div>
             <img src="{{ asset('storage/' . $news->thumbnail) }}" alt="" class="w-full rounded-2xl mb-3 bg-gray-100"
